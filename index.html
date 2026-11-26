@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101213">
+  <meta name="description" content="Count with confidence. A focused inventory auditing workspace with discrepancy tracking, audit sessions, and local backups. By Norvak Web.">
+  <meta property="og:title" content="Inventory Audit by Norvak">
+  <meta property="og:description" content="A clearer view of every count. Inventory auditing, built for the way you work.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://chepot87.github.io/Inventory-Audit-V2/">
+  <meta property="og:image" content="https://chepot87.github.io/Inventory-Audit-V2/assets/inventory-audit-cover.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/webp" href="assets/norvak-n-clean.webp">
+  <link rel="stylesheet" href="styles.css">
+  <title>Inventory Audit by Norvak | V2</title>
+  <script type="module" src="script.js"></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to audit workspace</a>
+  <aside class="sidebar no-print" aria-label="Application navigation">
+    <a class="brand" href="./" aria-label="Inventory Audit home"><img src="assets/norvak-n-clean.webp" width="42" height="42" alt=""><span>inventory<span class="brand-second">audit<span class="version">V2</span></span></span></a>
+    <p class="nav-label">YOUR WORKSPACE</p>
+    <nav><a class="nav-item active" href="#workspace" aria-current="page"><span aria-hidden="true">▦</span> Audit workspace</a><button class="nav-item" id="sessions-nav"><span aria-hidden="true">▤</span> Audit sessions <span id="session-count" class="nav-count">1</span></button><button class="nav-item" id="data-nav"><span aria-hidden="true">⇅</span> Data & backups</button></nav>
+    <div class="sidebar-bottom"><button class="nav-item" id="guide-nav"><span aria-hidden="true">ⓘ</span> Quick guide</button><div class="local-card"><span class="local-mark" aria-hidden="true">✓</span><strong>Your data. Your device.</strong><p>Saved in this browser.<br>Back up to keep a safe copy.</p></div><a class="norvak-credit" href="https://chepot87.github.io/Norvak-Web-V3/" target="_blank" rel="noopener noreferrer"><img src="assets/norvak-n-clean.webp" width="23" height="23" alt=""> Built by <b>NORVAK WEB</b></a></div>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar no-print"><div class="breadcrumb">Norvak apps <span>/</span> <strong>Inventory Audit</strong></div><div class="save-state" id="save-state" role="status">✓ Ready · local storage</div><button class="icon-button" id="help-button" aria-label="Open quick guide">?</button></header>
+    <main id="workspace" tabindex="-1">
+      <div id="storage-alert" class="alert" role="alert" hidden></div>
+      <section class="page-heading"><div><p class="eyebrow">LESS FRICTION. MORE ACCURACY.</p><h1>Every count <span>counts.</span></h1><p>A clearer view of your inventory. One audit at a time.</p></div><div class="heading-actions no-print"><button class="button secondary" id="print-button"><span aria-hidden="true">▤</span> Print report</button><button class="button secondary" id="export-button"><span aria-hidden="true">↓</span> Export CSV</button></div></section>
+      <div class="session-bar"><div class="session-indicator" aria-hidden="true"></div><label for="session-select">Audit session</label><select id="session-select" aria-label="Active audit session"></select><span class="tag" id="session-status">Open</span><span class="session-date" id="session-date"></span><button class="text-button no-print" id="new-session">+ New session</button></div>
+      <p class="print-heading" id="print-heading"></p>
+      <section class="stats-grid" aria-label="Active session statistics">
+        <article class="stat-card"><div class="stat-label">Locations audited <span aria-hidden="true">▦</span></div><strong id="metric-locations">0</strong><p>Unique locations in this session</p></article>
+        <article class="stat-card"><div class="stat-label">Audit records <span aria-hidden="true">▤</span></div><strong id="metric-total">0</strong><p>Every saved barcode count</p></article>
+        <article class="stat-card"><div class="stat-label">Matching records <span class="green" aria-hidden="true">✓</span></div><strong id="metric-matches">0</strong><p>Physical and system quantities match</p></article>
+        <article class="stat-card"><div class="stat-label">Discrepancies <span class="amber" aria-hidden="true">≠</span></div><strong id="metric-discrepancies">0</strong><p>Records that need a closer look</p></article>
+      </section>
+      <div class="workspace-grid">
+        <section class="panel entry-panel no-print" aria-labelledby="entry-title"><div class="panel-heading"><div><h2 id="entry-title">Log an audit</h2><p>Scan it. Count it. Keep moving.</p></div><span class="tag subtle">QUICK ENTRY</span></div>
+          <form id="audit-form"><div class="location-line"><label for="location">Inventory location<input id="location" name="location" placeholder="e.g. A-01-02" maxlength="80" required autocomplete="off" spellcheck="false"></label><span>One location.<br>As many barcodes as you need.</span></div><div id="entry-rows"></div><div class="form-bottom"><button class="text-button" id="add-upc" type="button">+ Add another UPC</button><span id="draft-state">Draft saves automatically</span></div><div class="form-actions"><p id="entry-hint"><kbd>Enter</kbd> moves to the next field</p><button class="button secondary" id="cancel-edit" type="button" hidden>Cancel edit</button><button class="button primary" id="save-records" type="submit"><span aria-hidden="true">+</span> Save audit</button></div><p id="form-error" class="form-error" role="alert" hidden></p></form>
+          <p id="archived-note" class="alert" hidden>This session is archived. Reopen it from Audit sessions to add or edit records.</p>
+        </section>
+        <section class="panel health-panel" aria-labelledby="health-title"><div class="panel-heading"><h2 id="health-title">Session overview</h2><span aria-hidden="true" class="muted">◉</span></div><div class="health-content"><div id="match-ring" class="match-ring"><div><strong id="metric-rate">—</strong><span>match rate</span></div></div><p class="rate-note">Matching records ÷ total records</p><div class="unit-stats"><div><span class="shortage-text">− Shortage units</span><strong id="metric-shortage">0</strong></div><div><span class="overage-text">+ Overage units</span><strong id="metric-overage">0</strong></div></div><p class="micro-note">Calculated across this session. Each recount is a separate record.</p></div></section>
+      </div>
+      <section class="panel records-panel" aria-labelledby="records-title"><div class="panel-heading"><div class="records-heading"><h2 id="records-title">Audit records</h2><span id="records-count" class="count-pill">0</span></div><p id="record-scope">Current session</p></div>
+        <div class="filter-bar no-print"><label class="search-label"><span class="sr-only">Search records</span><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search location, UPC, or notes…" maxlength="1000"></label><label><span class="sr-only">Discrepancy status</span><select id="status-filter"><option value="all">All statuses</option><option value="match">Matching</option><option value="discrepancy">Any discrepancy</option><option value="shortage">Shortage</option><option value="overage">Overage</option></select></label><label class="date-label">From<input id="date-from" type="date"></label><label class="date-label">To<input id="date-to" type="date"></label><button id="reset-filters" class="text-button">Reset</button></div>
+        <p id="date-error" class="form-error" role="alert" hidden>Start date must be on or before end date.</p>
+        <div class="table-scroll"><table id="records-table"><caption class="sr-only">Audit records for the selected session. Column buttons sort the results.</caption><thead><tr><th scope="col" data-sort="createdAt" aria-sort="descending"><button type="button">Time <span aria-hidden="true">↓</span></button></th><th scope="col" data-sort="location"><button type="button">Location <span aria-hidden="true">↕</span></button></th><th scope="col" data-sort="upc"><button type="button">UPC / Barcode <span aria-hidden="true">↕</span></button></th><th scope="col" data-sort="found" class="numeric"><button type="button">Physical <span aria-hidden="true">↕</span></button></th><th scope="col" data-sort="expected" class="numeric"><button type="button">System <span aria-hidden="true">↕</span></button></th><th scope="col" data-sort="discrepancy"><button type="button">Difference <span aria-hidden="true">↕</span></button></th><th scope="col">Notes</th><th scope="col" class="no-print"><span class="sr-only">Actions</span></th></tr></thead><tbody id="records-body"></tbody></table></div>
+        <div id="empty-state" class="empty-state"><div aria-hidden="true" class="empty-icon">▤</div><h3>Your next audit starts here.</h3><p>Save your first count above, or explore with fictional demo inventory.</p><button id="load-demo" class="button secondary no-print">Explore demo data</button></div><div class="table-footer"><p id="results-label">0 records in this session</p><div class="pagination no-print"><button class="text-button" id="prev-page">Previous</button><span id="page-label">Page 1 of 1</span><button class="text-button" id="next-page">Next</button></div></div>
+      </section>
+      <section class="brand-banner no-print"><img src="assets/inventory-audit-cover.webp" width="220" height="124" alt="Approved Inventory Audit by Norvak warehouse artwork" loading="lazy"><div><p class="eyebrow">BUILT FROM REAL EXPERIENCE</p><h2>Precision meets a better workflow.</h2><p>Independent software by Norvak Web. Made to make work simpler.</p></div><span class="banner-version">INVENTORY AUDIT <b>V2.0</b></span></section>
+      <footer><p>Inventory Audit <span>by Norvak</span> <span class="footer-divider">/</span> v2.0.0</p><p>Browser-local data · No automatic device sync <button id="footer-data" class="text-button no-print">Manage backups</button></p></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <dialog id="app-dialog" aria-labelledby="dialog-title"><div class="dialog-heading"><h2 id="dialog-title"></h2><button type="button" class="icon-button" id="close-dialog" aria-label="Close dialog">×</button></div><div id="dialog-content"></div></dialog>
+  <template id="entry-template"><fieldset class="entry-row"><legend class="sr-only">Barcode entry</legend><div class="entry-fields"><label>UPC / barcode<input class="upc" name="upc" type="text" maxlength="100" placeholder="Scan or type barcode" autocomplete="off" spellcheck="false" required></label><label>Physical qty<input class="found" name="found" type="number" min="0" max="1000000000" step="1" inputmode="numeric" placeholder="0" required></label><label>System qty<input class="expected" name="expected" type="number" min="0" max="1000000000" step="1" inputmode="numeric" placeholder="0" required></label><div class="live-diff"><span>Difference</span><output>—</output></div><button class="icon-button remove-entry" type="button" aria-label="Remove barcode entry">×</button></div><label class="notes-label"><span>Notes <span class="optional">(optional)</span></span><input class="notes" name="notes" maxlength="1000" placeholder="Add context for this count…" autocomplete="off"></label></fieldset></template>
+  <noscript><div class="alert">JavaScript is required to use Inventory Audit. Enable it in your browser and reload.</div></noscript>
+</body>
+</html>

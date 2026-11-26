@@ -1,0 +1,8 @@
+{
+  "name": "inventory-audit-by-norvak",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Independent, browser-local inventory auditing by Norvak Web",
+  "scripts": { "test": "node --test", "start": "node dev-server.mjs" }
+}
