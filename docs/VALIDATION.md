@@ -22,3 +22,11 @@ Release: v2.0.0. Owner approved publication on 2026-11-26. GitHub Pages was enab
 - A physical mobile device and a physical keyboard-emulating scanner were not available for certification. Responsive layouts were checked in browser-rendered frames.
 
 Temporary test harnesses are ignored by Git and are not part of the published application. Fictional QA data only exists in local preview browser storage and is not committed or transferred to GitHub Pages.
+
+## Excel export update · v2.0.1
+
+- Added Export report with native `.xlsx` and existing CSV options, plus Google Sheets import instructions.
+- All 17 Node regression tests passed, including four XLSX tests for text-cell safety, barcode leading zeros, numeric quantities, Unicode, workbook round-trip, actual ZIP/XML contents without formulas, and filtered summary scope.
+- Chrome downloaded two actual workbooks from the preview: a six-record fictional report and a shortage-filtered two-record report. Read both downloaded files back and confirmed their Audit records and Summary sheets, row counts, text barcode cell types, shortage totals and overage totals.
+- Browser error/warning log was empty during the export checks. No Google or Microsoft account was connected and no records were automatically uploaded.
+- Native Excel and Google Sheets applications were not used for an end-to-end opening/import test. The generated files were checked as real XLSX workbooks; Google Sheets import instructions follow Google's published documentation.

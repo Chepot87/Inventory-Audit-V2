@@ -1,4 +1,5 @@
 import { STORAGE_KEY, MAX_RECORDS, MAX_SESSIONS, newId, emptyDraft, emptyEntry, hasDraft, initialState, validateEntry, validateState, textValue, quantity, discrepancy, statusOf, metrics, selectRecords, localDate, toCSV, demoSession } from './core.js';
+import { loadExcelEngine, buildAuditWorkbook } from './excel.js';
 
 const $ = id => document.getElementById(id);
 const el = (tag, text, className) => {
@@ -347,8 +348,8 @@ async function loadDemo() {
 function showGuide() {
   const content = el('div'); content.append(el('p', 'A focused workflow for inventory control. Every record belongs to a session.'));
   const list = el('ol', undefined, 'guide-list');
-  for (const text of ['Start or choose a session. Enter the inventory location.', 'Scan a UPC / barcode, then enter physical and system quantities. Zero is valid; blanks, negative numbers, and decimals are not.', 'Enter moves between fields. A keyboard-style scanner with an Enter suffix moves from barcode to physical quantity. Tab also works normally.', 'Add more UPC rows for the same location, then Save audit. The location stays ready for the next count; duplicate barcodes are allowed for recounts.', 'Use search, status, and local calendar dates to narrow records. Click a column heading to sort. CSV and print include all filtered results, across every page.', 'Edit or delete a count using its row actions. Archive finished sessions to protect them from edits; reopen when needed.', 'Download JSON backups for a full copy of all sessions and drafts. Restore replaces V2 data after confirmation. This app does not migrate the original tool’s HTML storage.']) list.append(el('li', text));
-  content.append(list, el('h3', 'How the numbers work'), el('p', 'Difference = physical − system. Zero is a match; a negative difference is a shortage; a positive difference is an overage. Match rate is matching records ÷ total records. Shortage and overage units are summed separately, without canceling each other out. Dashboard metrics always cover the whole current session, including recounts. They do not represent total inventory on hand.'), el('h3', 'Independent by design'), el('p', 'Inventory Audit by Norvak is independent software, without affiliation with any employer, retailer, or warehouse operator. Use fictional records for demonstrations. Browser-local storage is not encrypted and is not an enterprise inventory system.'));
+  for (const text of ['Start or choose a session. Enter the inventory location.', 'Scan a UPC / barcode, then enter physical and system quantities. Zero is valid; blanks, negative numbers, and decimals are not.', 'Enter moves between fields. A keyboard-style scanner with an Enter suffix moves from barcode to physical quantity. Tab also works normally.', 'Add more UPC rows for the same location, then Save audit. The location stays ready for the next count; duplicate barcodes are allowed for recounts.', 'Use search, status, and local calendar dates to narrow records. Click a column heading to sort. Excel, CSV and print include all filtered results, across every page.', 'Edit or delete a count using its row actions. Archive finished sessions to protect them from edits; reopen when needed.', 'Download JSON backups for a full copy of all sessions and drafts. Restore replaces V2 data after confirmation. This app does not migrate the original tool’s HTML storage.']) list.append(el('li', text));
+  content.append(list, el('h3', 'Excel & Google Sheets'), el('p', 'Choose Export report, then Export Excel (.xlsx). The workbook includes your filtered audit records and a summary. To use Google Sheets, open a spreadsheet and choose File → Import → Upload, then select the downloaded Excel file. Opening a downloaded file on your computer uses the app assigned to that file type.'), el('h3', 'How the numbers work'), el('p', 'Difference = physical − system. Zero is a match; a negative difference is a shortage; a positive difference is an overage. Match rate is matching records ÷ total records. Shortage and overage units are summed separately, without canceling each other out. Dashboard metrics always cover the whole current session, including recounts. They do not represent total inventory on hand.'), el('h3', 'Independent by design'), el('p', 'Inventory Audit by Norvak is independent software, without affiliation with any employer, retailer, or warehouse operator. Use fictional records for demonstrations. Browser-local storage is not encrypted and is not an enterprise inventory system.'));
   openDialog('Count with confidence', content);
 }
 for (const id of ['guide-nav', 'help-button']) $(id).addEventListener('click', showGuide);
@@ -363,11 +364,33 @@ for (const th of document.querySelectorAll('th[data-sort]')) th.querySelector('b
 });
 $('prev-page').addEventListener('click', () => { page--; renderRecords(); });
 $('next-page').addEventListener('click', () => { page++; renderRecords(); });
-$('export-button').addEventListener('click', () => {
+function showExport() {
   const records = filteredRecords();
   if (!records.length) return notify('There are no matching records to export.', true);
-  download(toCSV(records, state.sessions), `inventory-audit-${localDate(new Date())}.csv`, 'text/csv;charset=utf-8'); notify(`${records.length} filtered records exported.`);
-});
+  const snapshot = structuredClone(state.sessions), name = session().name;
+  const content = el('div');
+  content.append(el('p', `${records.length} filtered records from “${name}”. All matching pages are included.`));
+  const excel = el('button', 'Export Excel (.xlsx)', 'button primary');
+  const csv = el('button', 'Download CSV', 'button secondary');
+  excel.type = csv.type = 'button';
+  excel.addEventListener('click', run(async () => {
+    excel.disabled = true; excel.textContent = 'Preparing Excel…';
+    try {
+      const XLSX = await loadExcelEngine();
+      const workbook = buildAuditWorkbook(XLSX, records, snapshot, name);
+      const bytes = XLSX.write(workbook, { bookType: 'xlsx', type: 'array', compression: true });
+      download(bytes, `inventory-audit-${localDate(new Date())}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      notify('Excel file downloaded. Open it in Excel or import it into Google Sheets.');
+    } finally { excel.disabled = false; excel.textContent = 'Export Excel (.xlsx)'; }
+  }));
+  csv.addEventListener('click', () => {
+    download(toCSV(records, snapshot), `inventory-audit-${localDate(new Date())}.csv`, 'text/csv;charset=utf-8');
+    notify(`${records.length} filtered records exported as CSV.`);
+  });
+  content.append(excel, csv, el('h3', 'Use in Google Sheets'), el('p', 'Open a spreadsheet in Google Sheets, then choose File → Import → Upload and select the downloaded .xlsx file. Excel export includes an Audit records sheet and a Summary sheet.'), el('p', 'If a downloaded file opens in VS Code, use Open with → Excel on your computer, or import the file into Google Sheets. Your browser does not upload this report automatically.'));
+  openDialog('Export audit records', content);
+}
+$('export-button').addEventListener('click', showExport);
 function preparePrint() {
   $('records-body').replaceChildren(...filteredRecords().map(recordRow));
   $('results-label').textContent = `${filteredRecords().length} filtered records · all pages`;

@@ -1,6 +1,6 @@
 # Inventory Audit by Norvak
 
-**Inventory Audit V2 · v2.0.0**
+**Inventory Audit V2 · v2.0.1**
 
 A focused, browser-local inventory auditing application by **Norvak Web**. Capture counts, identify shortages and overages, organize audit sessions, and export clear reports. Built from inventory control and quality assurance experience, with a straightforward interface for repetitive auditing.
 
@@ -18,7 +18,7 @@ A focused, browser-local inventory auditing application by **Norvak Web**. Captu
 - Automatically saved audit data and entry drafts. Keep the location after saving to speed up the next scan.
 - Search location, barcode and notes; combine status and inclusive local date filters.
 - Sort by timestamp, location, barcode, physical quantity, system quantity or difference. Display 25 results per page.
-- CSV export and print reports include **every filtered result**, across all pages. Dashboard statistics always cover the entire active session.
+- Excel (.xlsx), CSV export and print reports include **every filtered result**, across all pages. Excel contains an **Audit records** sheet and a **Summary** sheet for the exported selection. Dashboard statistics always cover the entire active session.
 - Full JSON backup and validated restore, with explicit replacement confirmation and a download of the previous data.
 - Opt-in fictional demo inventory, stored in its own session.
 - Keyboard navigation, visible focus, labeled inputs, live notifications, native modal dialogs and reduced-motion support.
@@ -31,7 +31,9 @@ A focused, browser-local inventory auditing application by **Norvak Web**. Captu
 3. Use **Add another UPC** to capture more items in that location. A batch can contain up to 40 barcodes. Saving is all-or-nothing if an entry is invalid.
 4. Press **Save audit**. The location stays filled; focus returns to barcode entry.
 5. Search, filter and sort audit records. Use row actions to edit or delete. Archive sessions when finished, then reopen them when changes are needed.
-6. Export the current filtered results to CSV or print. Download a JSON backup regularly from **Data & backups**.
+6. Choose **Export report → Export Excel (.xlsx)** for an Excel workbook, or **Download CSV** for a CSV file. To use the Excel file in Google Sheets, open a spreadsheet and choose **File → Import → Upload**, then select the downloaded file. Print is also available. Download a JSON backup regularly from **Data & backups**.
+
+Opening a downloaded file uses the app assigned to that file type on the device. If it opens in VS Code, use **Open with → Excel** or import the file into Google Sheets. The app does not automatically upload reports to a Google or Microsoft account.
 
 **Scanners:** Standard keyboard-emulating scanners work with the barcode text field. An Enter suffix advances to physical quantity. Enter continues through fields and saves after the last notes field; Tab follows normal browser navigation. No device-specific scanner integration is required. Physical hardware scanners have not been certified.
 
@@ -58,13 +60,14 @@ Recounts are separate records, even when location and barcode repeat. These metr
 - GitHub Pages projects under the same account share an origin. The unique key avoids accidental collisions, but localStorage is **not** encrypted or isolated from other scripts on that origin. It is unsuitable for sensitive employer information.
 - User values are rendered with DOM text APIs, never interpreted as HTML. Quantities must be nonnegative whole numbers up to 1,000,000,000. Barcodes stay strings to preserve leading zeros.
 - CSV fields escape quotes, commas and line breaks. Untrusted formula-leading text receives a protective apostrophe. Barcode fields also receive an apostrophe to help spreadsheets retain leading zeros. Some CSV consumers display this apostrophe literally. JSON retains exact values.
+- Excel stores barcodes and user-provided values as text cells and counts as numbers. Formula-leading notes remain literal text; the workbook contains no generated formulas or macros. Barcode text retains leading zeros without a protective apostrophe.
 - Restore validates every session and record, rejecting invalid files as a whole. Files are limited to 8 MB; the application supports up to 500 sessions and 20,000 records, subject to browser storage capacity.
 - A failed write produces a visible warning and does not report a record as saved. Conflicting changes from another tab pause writing. Back up unsaved work and reload to continue. This is a single-user tool; simultaneous collaborative editing is not supported.
 - Browser data clearing, private mode, browser resets, profile changes and storage limits can remove or prevent persistence. Download backups. No public demo should contain employer inventory, employee data or internal operational information.
 
 ## Technologies and structure
 
-Buildless HTML, CSS and JavaScript ES modules. No production dependencies, remote fonts, icon libraries, paid services or build step. The Manrope font is served locally with its OFL license. Existing Norvak assets are reused locally.
+Buildless HTML, CSS and JavaScript ES modules. No framework, remote fonts, icon libraries, paid services or build step. A local, pinned copy of **SheetJS CE 0.20.3 mini** is loaded only for Excel export, under its included Apache 2.0 license. No audit data goes to SheetJS. The Manrope font is served locally with its OFL license. Existing Norvak assets are reused locally.
 
 ```text
 Inventory-Audit-V2/
@@ -72,8 +75,10 @@ Inventory-Audit-V2/
 ├── styles.css          # Dashboard, responsive and print styling
 ├── script.js           # DOM, sessions, persistence and user workflows
 ├── core.js             # Pure validation, metrics, filters and CSV logic
+├── excel.js            # Lazy Excel writer and report workbook structure
 ├── assets/             # Existing brand artwork, logo and licensed font
 ├── tests/core.test.js   # Node built-in regression tests
+├── tests/excel.test.js  # XLSX text safety, archive content and report tests
 ├── dev-server.mjs      # Loopback-only development preview
 ├── package.json
 ├── .nojekyll
@@ -101,7 +106,7 @@ The approved release is published from the `main` branch and repository root usi
 - Whole unit counts only. Barcode values are flexible identifiers, without UPC check-digit validation.
 - History clearing removes records from one session; sessions can be archived and renamed, but not deleted in this release.
 - No automatic migration from the original ICQA Tool.
-- Records use the device clock. Date filters use the device's local calendar date; CSV timestamps are ISO UTC.
+- Records use the device clock. Date filters use the device's local calendar date; exported timestamps are ISO UTC.
 - No automated discrepancy resolution, stock adjustment or compliance certification.
 - CSV formula protection can change how a field displays in some spreadsheet programs. Use JSON for exact backups.
 
@@ -109,4 +114,4 @@ The approved release is published from the `main` branch and repository root usi
 
 Inventory Audit by Norvak is independent software developed by [Norvak Web](https://chepot87.github.io/Norvak-Web-V3/). It is not affiliated with or endorsed by any retailer, warehouse operator or employer. The [original ICQA Tool](https://github.com/Chepot87/ICQAtool) remains a separate previous version.
 
-Application code and Norvak brand artwork are not granted a third-party reuse license by this repository. The included Manrope font remains under its supplied OFL license.
+Application code and Norvak brand artwork are not granted a third-party reuse license by this repository. The included Manrope font remains under its supplied OFL license. The vendored SheetJS library remains under its included Apache 2.0 license.
