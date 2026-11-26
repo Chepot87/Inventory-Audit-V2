@@ -1,6 +1,6 @@
 # Review candidate validation · 2026-11-26
 
-Release candidate: v2.0.0. GitHub Pages is intentionally not enabled until owner approval.
+Release: v2.0.0. Owner approved publication on 2026-11-26. GitHub Pages was enabled for `main` at the repository root; the public URL returned HTTP 200 and was verified in Chrome.
 
 ## Verified
 
@@ -12,7 +12,8 @@ Release candidate: v2.0.0. GitHub Pages is intentionally not enabled until owner
 - Desktop layout visually inspected. Phone and tablet layouts inspected using a temporary local iframe harness at 320, 390 and 768 CSS pixels (305, 375 and 753 usable pixels with browser scrollbars). Fixed an accessibility text positioning issue that caused horizontal page overflow. Verified document width equals viewport width at all three sizes; the records table scrolls inside its own container.
 - Scanner-style Enter key from a barcode field advances to physical quantity. Keyboard focus indicator visually checked. No real hardware barcode scanner was used.
 - Browser error/warning log check returned no entries during the core workflow tests.
-- Existing Norvak logo, approved cover and local Manrope font reused. Original ICQA repository and legacy browser key were not modified. Portfolio remains unchanged pending approved publication.
+- Existing Norvak logo, approved cover and local Manrope font reused. Original ICQA repository and legacy browser key were not modified.
+- Public deployment: created a fictional record with physical quantity 0 and expected quantity 2; reloaded and confirmed one record, two shortage units, and the original barcode leading zeros. Deleted the fictional verification record and reset its draft location. The public browser error/warning log was empty.
 
 ## Manual checks still needed
 

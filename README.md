@@ -4,7 +4,7 @@
 
 A focused, browser-local inventory auditing application by **Norvak Web**. Capture counts, identify shortages and overages, organize audit sessions, and export clear reports. Built from inventory control and quality assurance experience, with a straightforward interface for repetitive auditing.
 
-**Deployment target:** [Inventory Audit V2](https://chepot87.github.io/Inventory-Audit-V2/). GitHub Pages will be enabled after owner approval; this link is not a claim that the application is already published.
+**Live application:** [Inventory Audit V2](https://chepot87.github.io/Inventory-Audit-V2/) · **[Source repository](https://github.com/Chepot87/Inventory-Audit-V2)**
 
 ![Inventory Audit by Norvak artwork](assets/inventory-audit-cover.webp)
 
@@ -93,7 +93,7 @@ On Windows systems where PowerShell blocks the `npm.ps1` launcher, use `npm.cmd 
 
 ## GitHub Pages
 
-After approval, publish the `main` branch from the repository root using GitHub Pages' **Deploy from a branch** source. No secrets, build workflow or server are needed. All resource paths are relative and support the `/Inventory-Audit-V2/` project path. Verify the deployed application rather than relying solely on a successful commit.
+The approved release is published from the `main` branch and repository root using GitHub Pages' **Deploy from a branch** source. No secrets, build workflow or server are needed. All resource paths are relative and support the `/Inventory-Audit-V2/` project path. The public application was verified in Chrome, including saving a fictional count and retaining it across a reload. Future releases should also be checked at the public URL rather than relying solely on a successful commit.
 
 ## Current limitations
 
